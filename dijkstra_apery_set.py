@@ -16,21 +16,21 @@ def dijkstra_apery_set(coefficients: List[int]) -> Dict[int, int]:
     coefficients = sorted(coefficients, reverse=True)
     modulus = coefficients.pop()
 
-    distance = [float('inf')] * modulus
+    distances = [float('inf')] * modulus
     
-    # distanceance to residue 0 is 0
-    distance[0] = 0
+    # distance to residue 0 is 0
+    distances[0] = 0
 
     # create Apery set
     apery = {i:i for i in range(modulus)}
 
-    # heap with (distanceance, residue) terms
+    # heap with (distance, residue) terms
     heap = [(0, 0)]
 
     visited = [False] * modulus
 
     while heap:
-        distanceance, residue = heapq.heappop(heap)
+        distance, residue = heapq.heappop(heap)
 
         if visited[residue]:
             continue
@@ -40,10 +40,10 @@ def dijkstra_apery_set(coefficients: List[int]) -> Dict[int, int]:
         # update weights
         for coefficient in coefficients:
             current_residue = (residue + coefficient) % modulus
-            new_distance = distanceance + coefficient
+            new_distance = distance + coefficient
 
-            if new_distance < distance[current_residue]:
-                distance[current_residue] = new_distance
+            if new_distance < distances[current_residue]:
+                distances[current_residue] = new_distance
                 apery[current_residue] = new_distance
                 heapq.heappush(heap, (new_distance, current_residue))
 
@@ -59,6 +59,6 @@ if __name__ == "__main__":
     coefficients = [7, 9, 15]
 
     apery_set = dijkstra_apery_set(coefficients)
-    # print(f"{apery_set = }")
+    print(f"{apery_set = }")
     print(f"{len(apery_set) = }")
 
