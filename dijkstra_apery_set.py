@@ -6,7 +6,29 @@ from gcd_for_numpy_array import gcd_for_numpy_array
 
 def dijkstra_apery_set(coefficients: List[int]) -> Dict[int, int]:
     """
-        O(N) = O(n*modulus*log(modulus))
+        Description:
+            1. Check gcd, if it is not equal to one => problem is impossible;
+            2. Get min(coefficients) as modulus;
+            3. Delete (modulus) from (coefficients) for tiny optimization;
+            4. Create (distances) list with inf as initial value for all residues;
+            5. Create Apery dict with all residues and random values;
+            6. Create heap with initial (0, 0) (distance, residue) pair;
+            7. Create list for (visited_residues_residues) with False as initial value for all residues;
+            7. For every term in heap:
+                1. Pop min term and unpack as (distance, residue) pair;
+                2. If residue is visited: continue;
+                3. If not:
+                    1. For all coefficients calculate (current_residue) as (residue + coefficient) % (modulus);
+                    2. Calculate (new_distance) as (distance + coefficient);
+                    3. If (new_distance) < distances[current_residue]:
+                        1. Update (distances[current_residue]) with (new_distance);
+                        2. Update (apery[current_residue]) with (new_distance);
+                        3. Add to heap (new_distance, current_residue) pair;
+
+        Return:
+            dict with shape (key=residue, value=term)
+
+        Time complexity: O(len(coefficients)*modulus*log(modulus)).
     """
 
     if gcd_for_numpy_array(np.array(coefficients)) != 1:
@@ -27,15 +49,15 @@ def dijkstra_apery_set(coefficients: List[int]) -> Dict[int, int]:
     # heap with (distance, residue) terms
     heap = [(0, 0)]
 
-    visited = [False] * modulus
+    visited_residues = [False] * modulus
 
     while heap:
         distance, residue = heapq.heappop(heap)
 
-        if visited[residue]:
+        if visited_residues[residue]:
             continue
 
-        visited[residue] = True
+        visited_residues[residue] = True
 
         # update weights
         for coefficient in coefficients:
